@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -15,7 +16,9 @@ public class TeleopV12526 extends LinearOpMode {
     private DcMotor backLeft = null;
     private DcMotor backRight = null;
     private DcMotor intakeMotor = null;
-    private Servo servo;
+    private DcMotor RampPusher = null;
+    private DcMotor Shooter = null;
+
     // Timer for runtime
     @Override
     public void runOpMode() {
@@ -25,8 +28,8 @@ public class TeleopV12526 extends LinearOpMode {
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
         intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
-
-        servo = hardwareMap.get(Servo.class, "servo");
+        RampPusher = hardwareMap.get(DcMotor.class, "RampPusher");
+        Shooter = hardwareMap.get(DcMotor.class, "Shooter");
 
         // Reverse motors for correct direction
         frontRight.setDirection(DcMotor.Direction.REVERSE);
@@ -67,6 +70,10 @@ public class TeleopV12526 extends LinearOpMode {
 
             double intakeMotorPower = 0;
             intakeMotor.setPower(intakeMotorPower / max);
+            double RampPusherPower = 0;
+            RampPusher.setPower(RampPusherPower / max);
+            double ShooterPower = 0;
+            Shooter.setPower(ShooterPower / max);
 
             // Telemetry data for debugging
             telemetry.addData("Status", "Run Time: " + runtime.toString());
