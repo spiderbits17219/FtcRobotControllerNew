@@ -16,7 +16,9 @@ public class TeleopV2 extends LinearOpMode {
     private DcMotorEx backLeft;
     private DcMotor intakeMotor;
     private DcMotor rampPusher;
-    private DcMotor shooter;
+    private DcMotor shooter1;
+
+    private DcMotor shooter2;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -30,7 +32,8 @@ public class TeleopV2 extends LinearOpMode {
         backLeft = hardwareMap.get(DcMotorEx.class, "backLeft");
         intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
         rampPusher = hardwareMap.get(DcMotor.class, "RampPusher");
-        shooter = hardwareMap.get(DcMotor.class, "Shooter");
+        shooter1 = hardwareMap.get(DcMotor.class, "Shooter1");
+        shooter2 = hardwareMap.get(DcMotor.class, "Shooter2");
 
         // Set motor directions
         frontRight.setDirection(DcMotorEx.Direction.REVERSE);
@@ -94,7 +97,8 @@ public class TeleopV2 extends LinearOpMode {
             }
 
             // Shooter (Right trigger = spin up)
-            shooter.setPower(gamepad1.right_trigger);
+            shooter1.setPower(gamepad1.right_trigger);
+            shooter2.setPower(gamepad1.right_trigger);
 
             // --- Telemetry ---
             telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -103,7 +107,8 @@ public class TeleopV2 extends LinearOpMode {
                     frontLeft.getPower(), frontRight.getPower(),
                     backLeft.getPower(), backRight.getPower());
             telemetry.addData("Intake", intakeMotor.getPower());
-            telemetry.addData("Shooter", shooter.getPower());
+            telemetry.addData("Shooter1", shooter1.getPower());
+            telemetry.addData("Shooter2", shooter2.getPower());
             telemetry.update();
         }
     }
