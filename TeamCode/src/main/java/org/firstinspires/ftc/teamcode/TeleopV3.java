@@ -15,7 +15,6 @@ public class TeleopV3 extends LinearOpMode {
 
         // Initialize motors
         DcMotor frontRight = hardwareMap.get(DcMotor.class, "frontRight");
-        // Declare motors
         DcMotor frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
         DcMotor backRight = hardwareMap.get(DcMotor.class, "backRight");
         DcMotor backLeft = hardwareMap.get(DcMotor.class, "backLeft");
@@ -34,8 +33,8 @@ public class TeleopV3 extends LinearOpMode {
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //Reset encoders for intake
-        //intakeMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intakeMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -47,8 +46,6 @@ public class TeleopV3 extends LinearOpMode {
         // Run until the end of the match
         while (opModeIsActive()) {
 
-
-
             double leftDrive = -gamepad1.left_stick_y;
             double rightDrive  =  -gamepad1.right_stick_y;
 
@@ -57,10 +54,10 @@ public class TeleopV3 extends LinearOpMode {
             backLeft.setPower(leftDrive);
             backRight.setPower(rightDrive);
 
-            frontLeft.setPower(0.2);
-            frontRight.setPower(0.2);
-            backLeft.setPower(0.2);
-            backRight.setPower(0.2);
+//            frontLeft.setPower(0.2);
+//            frontRight.setPower(0.2);
+//            backLeft.setPower(0.2);
+//            backRight.setPower(0.2);
 
            //  --- Mechanisms (example placeholders) ---
             // Intake control (A = forward, B = reverse)
@@ -74,16 +71,16 @@ public class TeleopV3 extends LinearOpMode {
 
             // Ramp pusher (Y = push, X = pull)
             if (gamepad1.y) {
-              rampPusher.setPower(1.0);
-            } else if (gamepad1.x) {
               rampPusher.setPower(-1.0);
+            } else if (gamepad1.x) {
+              rampPusher.setPower(1.0);
             } else {
               rampPusher.setPower(0);
             }
 
             // Shooter (Right trigger = spin up)
-              shooter1.setPower(gamepad1.right_trigger);
-            shooter2.setPower(gamepad1.right_trigger);
+              shooter1.setPower(gamepad2.right_trigger);
+            shooter2.setPower(gamepad2.left_trigger);
 
             // --- Telemetry ---
             telemetry.addData("Status", "Run Time: " + runtime.toString());
