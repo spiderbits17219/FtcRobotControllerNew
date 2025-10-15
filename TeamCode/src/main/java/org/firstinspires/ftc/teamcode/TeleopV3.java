@@ -82,8 +82,7 @@ public class TeleopV3 extends LinearOpMode {
 
               if (gamepad2.a) {
                   shooter1.setPower(1.0);
-              } else if ( gamepad2.b) {
-                  shooter2.setPower(-1.0);
+                  shooter2.setPower(1.0);
               } else {
                   shooter1.setPower(0);
                   shooter2.setPower(0);
