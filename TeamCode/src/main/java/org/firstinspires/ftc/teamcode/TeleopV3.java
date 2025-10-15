@@ -71,16 +71,23 @@ public class TeleopV3 extends LinearOpMode {
 
             // Ramp pusher (Y = push, X = pull)
             if (gamepad1.y) {
-              rampPusher.setPower(-1.0);
-            } else if (gamepad1.x) {
               rampPusher.setPower(1.0);
+            } else if (gamepad1.x) {
+              rampPusher.setPower(-1.0);
             } else {
               rampPusher.setPower(0);
             }
 
             // Shooter (Right trigger = spin up)
-              shooter1.setPower(gamepad2.right_trigger);
-            shooter2.setPower(gamepad2.left_trigger);
+
+              if (gamepad2.a) {
+                  shooter1.setPower(1.0);
+              } else if ( gamepad2.b) {
+                  shooter2.setPower(-1.0);
+              } else {
+                  shooter1.setPower(0);
+                  shooter2.setPower(0);
+              }
 
             // --- Telemetry ---
             telemetry.addData("Status", "Run Time: " + runtime.toString());
