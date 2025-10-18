@@ -19,7 +19,7 @@ public class TeleopV3 extends LinearOpMode {
         DcMotor backRight = hardwareMap.get(DcMotor.class, "backRight");
         DcMotor backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         DcMotor intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
-        DcMotor rampPusher = hardwareMap.get(DcMotor.class, "rampPusher");
+        DcMotor transferMotor = hardwareMap.get(DcMotor.class, "transferMotor");
         DcMotor shooter1 = hardwareMap.get(DcMotor.class, "Shooter1");
         DcMotor shooter2 = hardwareMap.get(DcMotor.class, "Shooter2");
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
@@ -69,16 +69,16 @@ public class TeleopV3 extends LinearOpMode {
                 intakeMotor.setPower(0);
             }
 
-            // Ramp pusher (Y = push, X = pull)
+            // Transfer Control (Y = push, X = pull)
             if (gamepad1.y) {
-              rampPusher.setPower(1.0);
+              transferMotor.setPower(1.0);
             } else if (gamepad1.x) {
-              rampPusher.setPower(-1.0);
+              transferMotor.setPower(-1.0);
             } else {
-              rampPusher.setPower(0);
+              transferMotor.setPower(0);
             }
 
-            // Shooter (Right trigger = spin up)
+            // Shooter (A Button = spin up)
 
               if (gamepad2.a) {
                   shooter1.setPower(1.0);
