@@ -37,6 +37,7 @@ public class Teleop2526 extends LinearOpMode {
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         telemetry.addData("Status", "Initialized");
+
         telemetry.update();
 
         // Wait for the game to start
