@@ -37,6 +37,7 @@ public class Teleop2526 extends LinearOpMode {
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         telemetry.addData("Status", "Initialized");
+
         telemetry.update();
 
         // Wait for the game to start
@@ -59,9 +60,9 @@ public class Teleop2526 extends LinearOpMode {
 //            backLeft.setPower(0.2);
 //            backRight.setPower(0.2);
 
-           //  --- Mechanisms (example placeholders) ---
+            //  --- Mechanisms (example placeholders) ---
             // Intake control (A = forward, B = reverse)
-            if (gamepad1.a) {
+            if (gamepad2.a) {
                 intakeMotor.setPower(1.0);
             } else if (gamepad1.b) {
                 intakeMotor.setPower(-1.0);
@@ -70,23 +71,24 @@ public class Teleop2526 extends LinearOpMode {
             }
 
             // Transfer Control (Y = push, X = pull)
-            if (gamepad1.y) {
-              transferMotor.setPower(1.0);
+            if (gamepad2.y) {
+                transferMotor.setPower(1.0);
             } else if (gamepad1.x) {
-              transferMotor.setPower(-1.0);
+                transferMotor.setPower(-1.0);
             } else {
-              transferMotor.setPower(0);
+                transferMotor.setPower(0);
             }
 
             // Shooter (A Button = spin up)
 
-              if (gamepad2.a) {
-                  shooter1.setPower(1.0);
-                  shooter2.setPower(1.0);
-              } else {
-                  shooter1.setPower(0);
-                  shooter2.setPower(0);
-              }
+            if (gamepad2.right_bumper) {
+                shooter1.setPower(1.0);
+                if (gamepad2.left_bumper)
+                    shooter2.setPower(1.0);
+            } else {
+                shooter1.setPower(0);
+                shooter2.setPower(0);
+            }
 
             // --- Telemetry ---
             telemetry.addData("Status", "Run Time: " + runtime.toString());
