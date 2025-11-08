@@ -3,10 +3,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@Autonomous(name="blueFarAuto", group="Autonomous")
-public class blueFarAuto extends LinearOpMode {
+@Autonomous(name="redFarAuto", group="Autonomous")
+public class redFarAuto extends LinearOpMode {
 
     private DcMotor leftFront = null;
     private DcMotor leftBack = null;
@@ -48,7 +47,7 @@ public class blueFarAuto extends LinearOpMode {
         waitForStart();
 
         encoderDrive(0.5, 100);    // forward 4.smth tiles
-        turnDrive(0.5, -12);      // turn left
+        turnDrive(0.5, 12);      // turn right
         encoderDrive(0.5, 6);   //half a tile
 
         Shooter1.setPower(1);
