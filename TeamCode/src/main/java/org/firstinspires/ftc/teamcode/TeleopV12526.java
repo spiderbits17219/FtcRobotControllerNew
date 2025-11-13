@@ -10,26 +10,19 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @TeleOp(name = "TeleopV12526", group = "Linear OpMode")
 public class TeleopV12526 extends LinearOpMode {
 
-    private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor frontLeft = null;
-    private DcMotor frontRight = null;
-    private DcMotor backLeft = null;
-    private DcMotor backRight = null;
-    private DcMotor intakeMotor = null;
-    private DcMotor RampPusher = null;
-    private DcMotor Shooter = null;
+    private final ElapsedTime runtime = new ElapsedTime();
 
     // Timer for runtime
     @Override
     public void runOpMode() {
         // Initialize hardware
-        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
-        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
-        backLeft = hardwareMap.get(DcMotor.class, "backLeft");
-        backRight = hardwareMap.get(DcMotor.class, "backRight");
-        intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
-        RampPusher = hardwareMap.get(DcMotor.class, "RampPusher");
-        Shooter = hardwareMap.get(DcMotor.class, "Shooter");
+        DcMotor frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
+        DcMotor frontRight = hardwareMap.get(DcMotor.class, "frontRight");
+        DcMotor backLeft = hardwareMap.get(DcMotor.class, "backLeft");
+        DcMotor backRight = hardwareMap.get(DcMotor.class, "backRight");
+        DcMotor intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
+        DcMotor rampPusher = hardwareMap.get(DcMotor.class, "RampPusher");
+        DcMotor shooter = hardwareMap.get(DcMotor.class, "Shooter");
 
         // Reverse motors for correct direction
         frontRight.setDirection(DcMotor.Direction.REVERSE);
@@ -71,9 +64,9 @@ public class TeleopV12526 extends LinearOpMode {
             double intakeMotorPower = 0;
             intakeMotor.setPower(intakeMotorPower / max);
             double RampPusherPower = 0;
-            RampPusher.setPower(RampPusherPower / max);
+            rampPusher.setPower(RampPusherPower / max);
             double ShooterPower = 0;
-            Shooter.setPower(ShooterPower / max);
+            shooter.setPower(ShooterPower / max);
 
             // Telemetry data for debugging
             telemetry.addData("Status", "Run Time: " + runtime.toString());
