@@ -58,7 +58,6 @@ public class Teleop2526 extends LinearOpMode {
 
         // PID sync variables
         double kP = 0.002; // proportional constant to sync shooter2 (change to be lower or higher)
-        double shooterPower = 0.1;
         // Run until the end of the match
         while (opModeIsActive()) {
 
@@ -73,10 +72,6 @@ public class Teleop2526 extends LinearOpMode {
             // Intake control (A = forward, B = reverse)
             if (gamepad2.a) {
                 intakeMotor.setPower(1.0);
-            } else {
-                intakeMotor.setPower(0);
-            }
-            if (gamepad2.b) {
                 intakeMotor.setPower(-1.0);
             } else {
                 intakeMotor.setPower(0);
@@ -85,11 +80,6 @@ public class Teleop2526 extends LinearOpMode {
             // Transfer Control (Y = push, X = pull)
             if (gamepad2.y) {
                 transferMotor.setPower(1.0);
-            } else {
-                intakeMotor.setPower(0);
-            }
-
-            if (gamepad2.x) {
                 transferMotor.setPower(-1.0);
             } else {
                 transferMotor.setPower(0);
@@ -97,35 +87,12 @@ public class Teleop2526 extends LinearOpMode {
 
 
             if (gamepad2.right_bumper) {
-                shooter1.setPower(0.5);
-                shooter2.setPower(0.5);
             } else {
                 shooter1.setPower(0);
                 shooter2.setPower(0);
             }
 
-//            if (gamepad2.right_bumper) {
-//                shooter1.setPower(shooterPower);
-//                // keep shooter2 in sync using encoder feedback
-//                int pos1 = shooter1.getCurrentPosition();
-//                int pos2 = shooter2.getCurrentPosition();
-//                double error = pos1 + pos2;
-//                double syncAdjust = kP * error;
-//                shooter2.setPower(shooterPower + syncAdjust);
-//                int SHOOTER_READY_POSITION = 1000; // replace w encoder target
-//                if (Math.abs(pos1) >= SHOOTER_READY_POSITION) {
-////                    feederServo.setPosition(-0.3); // open servo
-//                } else {
-//                    feederServo.setPosition(0.4); // keep closed until ready
                 }
-//            } else {
-//                shooter1.setPower(0);
-//                shooter2.setPower(0);
-//                feederServo.setPosition(0.0);
-//            }
-
-            if (gamepad2.dpad_left) {
-                blockerServo.setPosition(-0.4);
             } else {
                 blockerServo.setPosition(0);
             }
@@ -133,7 +100,6 @@ public class Teleop2526 extends LinearOpMode {
                 // --- Telemetry ---
                 telemetry.addData("Status", "Run Time: " + runtime.toString());
                 telemetry.addData("Shooter1 Pos", shooter1.getCurrentPosition());
-                telemetry.addData("blockerServo Pos", blockerServo.getPosition());
                 telemetry.addData("Shooter2 Pos", shooter2.getCurrentPosition());
                 telemetry.addData("Shooter Error", shooter1.getCurrentPosition() - shooter2.getCurrentPosition());
                 telemetry.addData("Shooter2 Adjusted Power", shooter2.getPower());
