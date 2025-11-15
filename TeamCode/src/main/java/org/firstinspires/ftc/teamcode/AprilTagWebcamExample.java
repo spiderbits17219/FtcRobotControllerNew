@@ -2,18 +2,15 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
-/**
- * Example OpMode that uses an AprilTag webcam.
- * It initializes the webcam, updates detections,
- * and displays info about a specific tag (ID 20).
- */
 @TeleOp(name = "AprilTag Webcam Example", group = "Example")
 public class AprilTagWebcamExample extends OpMode {
 
-    private AprilTagWebcam aprilTagWebcam = new AprilTagWebcam();
+    private final AprilTagWebcam aprilTagWebcam = new AprilTagWebcam();
+
+    // PERSONALIZE: Change this to the AprilTag ID you want to track
+    private static final int TARGET_TAG_ID = 20;
 
     @Override
     public void init() {
@@ -28,13 +25,24 @@ public class AprilTagWebcamExample extends OpMode {
 
     @Override
     public void loop() {
-        // Update AprilTag detections each loop
         aprilTagWebcam.update();
 
-        // Try to find a tag with ID 20
-        AprilTagDetection id20 = aprilTagWebcam.getTagBySpecificId(20);
+        AprilTagDetection targetTag = aprilTagWebcam.getTagBySpecificId(TARGET_TAG_ID);
 
-        // Display detection info
-        aprilTagWebcam.displayDetectionTelemetry(id20);
+        telemetry.addLine("----- AprilTag Status -----");
+
+        if (targetTag != null) {
+            telemetry.addLine("Tag FOUND!");
+            aprilTagWebcam.displayDetectionTelemetry(targetTag);
+        } else {
+            telemetry.addLine("Tag NOT detected.");
+        }
+
+        telemetry.update();
+    }
+
+    @Override
+    public void stop() {
+        aprilTagWebcam.stop();
     }
 }
