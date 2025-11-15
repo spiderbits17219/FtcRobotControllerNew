@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+
 @Autonomous(name="redCloseAuto", group="Autonomous")
 public class redCloseAuto extends LinearOpMode {
 
@@ -23,10 +24,10 @@ public class redCloseAuto extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         // Map hardware
-        leftFront  = hardwareMap.get(DcMotor.class, "frontLeft");
-        leftBack   = hardwareMap.get(DcMotor.class, "backLeft");
+        leftFront = hardwareMap.get(DcMotor.class, "frontLeft");
+        leftBack = hardwareMap.get(DcMotor.class, "backLeft");
         rightFront = hardwareMap.get(DcMotor.class, "frontRight");
-        rightBack  = hardwareMap.get(DcMotor.class, "backRight");
+        rightBack = hardwareMap.get(DcMotor.class, "backRight");
         Shooter1 = hardwareMap.get(DcMotor.class, "Shooter1");
         Shooter2 = hardwareMap.get(DcMotor.class, "Shooter2");
 
@@ -57,7 +58,7 @@ public class redCloseAuto extends LinearOpMode {
 
     // --- Forward/backward drive ---
     public void encoderDrive(double speed, double inches) {
-        int targetTicks = (int)(inches * COUNTS_PER_INCH);
+        int targetTicks = (int) (inches * COUNTS_PER_INCH);
 
         setTargetPositions(targetTicks, targetTicks);
         runToPositionWithPower(speed);
@@ -65,7 +66,7 @@ public class redCloseAuto extends LinearOpMode {
 
     // --- Turning drive (right = positive inches, left = negative inches) ---
     public void turnDrive(double speed, double inches) {
-        int targetTicks = (int)(inches * COUNTS_PER_INCH);
+        int targetTicks = (int) (inches * COUNTS_PER_INCH);
 
         // Opposite directions for turning
         setTargetPositions(targetTicks, -targetTicks);
@@ -129,4 +130,5 @@ public class redCloseAuto extends LinearOpMode {
         rightFront.setPower(0);
         rightBack.setPower(0);
     }
+
 }

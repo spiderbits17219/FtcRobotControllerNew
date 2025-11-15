@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="redFarAuto", group="Autonomous")
 public class redFarAuto extends LinearOpMode {
@@ -14,19 +17,25 @@ public class redFarAuto extends LinearOpMode {
     private DcMotor Shooter1 = null;
     private DcMotor Shooter2 = null;
 
+    private final ElapsedTime runtime = new ElapsedTime();
+
     // Motor / wheel constants
     static final double COUNTS_PER_MOTOR_REV = 537.7;   // GoBILDA Yellow Jacket (19.2:1)
-    static final double WHEEL_DIAMETER_INCHES = 4.0;    // Wheel diameter
+    static final double WHEEL_DIAMETER_INCHES = 4.0;
     static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER_INCHES * Math.PI;
     static final double COUNTS_PER_INCH = COUNTS_PER_MOTOR_REV / WHEEL_CIRCUMFERENCE;
 
+    // Shooter power
+    static final double SHOOTER_POWER = 1.0;
+
     @Override
     public void runOpMode() throws InterruptedException {
+
         // Map hardware
-        leftFront  = hardwareMap.get(DcMotor.class, "frontLeft");
-        leftBack   = hardwareMap.get(DcMotor.class, "backLeft");
+        leftFront = hardwareMap.get(DcMotor.class, "frontLeft");
+        leftBack = hardwareMap.get(DcMotor.class, "backLeft");
         rightFront = hardwareMap.get(DcMotor.class, "frontRight");
-        rightBack  = hardwareMap.get(DcMotor.class, "backRight");
+        rightBack = hardwareMap.get(DcMotor.class, "backRight");
         Shooter1 = hardwareMap.get(DcMotor.class, "Shooter1");
         Shooter2 = hardwareMap.get(DcMotor.class, "Shooter2");
 
@@ -38,17 +47,18 @@ public class redFarAuto extends LinearOpMode {
         Shooter1.setDirection(DcMotor.Direction.FORWARD);
         Shooter2.setDirection(DcMotor.Direction.FORWARD);
 
+        // Zero power behavior
+        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         // Reset encoders
         resetEncoders();
-
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
         waitForStart();
-
-        encoderDrive(0.5, 100);    // forward 4.smth tiles
-        turnDrive(0.5, 12);      // turn right
-        encoderDrive(0.5, 6);   //half a tile
 
         Shooter1.setPower(1);
         Shooter2.setPower(1);
@@ -57,11 +67,23 @@ public class redFarAuto extends LinearOpMode {
         telemetry.update();
 
         wait(1000);
-    }
 
+        // Setup dashboard telemetry
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
+
+        waitForStart();
+        runtime.reset();
+
+        // Autonomous movement
+        // Move forward
+        encoderDrive(0.5, 100);
+    }
     // --- Forward/backward drive ---
     public void encoderDrive(double speed, double inches) {
-        int targetTicks = (int)(inches * COUNTS_PER_INCH);
+        int targetTicks = (int) (inches * COUNTS_PER_INCH);
 
         setTargetPositions(targetTicks, targetTicks);
         runToPositionWithPower(speed);
@@ -69,7 +91,7 @@ public class redFarAuto extends LinearOpMode {
 
     // --- Turning drive (right = positive inches, left = negative inches) ---
     public void turnDrive(double speed, double inches) {
-        int targetTicks = (int)(inches * COUNTS_PER_INCH);
+        int targetTicks = (int) (inches * COUNTS_PER_INCH);
 
         // Opposite directions for turning
         setTargetPositions(targetTicks, -targetTicks);
@@ -133,4 +155,7 @@ public class redFarAuto extends LinearOpMode {
         rightFront.setPower(0);
         rightBack.setPower(0);
     }
-}
+    private void encoderDrive(double v, int i) {
+    }
+
+    }
