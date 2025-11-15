@@ -107,7 +107,6 @@ public class Teleop2526 extends LinearOpMode {
             } else {
                 transferMotor.setPower(0);
             }
-
 //            if (gamepad2.left_bumper) {
 //                liftServo.setPosition(1);
 //                holdServo1.setPosition(1);
