@@ -1,109 +1,109 @@
-package org.firstinspires.ftc.teamcode;
-
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
-
-@TeleOp(name = "Teleop2526")
-public class Teleop2526 extends LinearOpMode {
-
-    private final ElapsedTime runtime = new ElapsedTime();
-
-    @Override
-    public void runOpMode() {
-
-        // Initialize motors
-        DcMotor frontRight = hardwareMap.get(DcMotor.class, "frontRight");
-        DcMotor frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
-        DcMotor backRight = hardwareMap.get(DcMotor.class, "backRight");
-        DcMotor backLeft = hardwareMap.get(DcMotor.class, "backLeft");
-        DcMotor intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
-        DcMotor transferMotor = hardwareMap.get(DcMotor.class, "transferMotor");
-        DcMotor shooter1 = hardwareMap.get(DcMotor.class, "Shooter1");
-        DcMotor shooter2 = hardwareMap.get(DcMotor.class, "Shooter2");
-
-        // servo (part of intake)
-        Servo feederServo = hardwareMap.get(Servo.class, "feederServo");
-        Servo blockerServo = hardwareMap.get(Servo.class, "blockerServo");
-
-        frontLeft.setDirection(DcMotor.Direction.FORWARD);
-        frontRight.setDirection(DcMotor.Direction.REVERSE);
-        backLeft.setDirection(DcMotor.Direction.FORWARD);
-        backRight.setDirection(DcMotor.Direction.REVERSE);
-
-        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        //Shooter Encoders
-        shooter1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        shooter2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        shooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        shooter2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        //Reset encoders for intake
-        intakeMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        telemetry.addData("Status", "Initialized");
-
-        telemetry.update();
-
-        // Wait for the game to start
-        waitForStart();
-        runtime.reset();
-
-        // PID sync variables
-        double kP = 0.002; // proportional constant to sync shooter2 (change to be lower or higher)
-        // Run until the end of the match
-        while (opModeIsActive()) {
-
-            double leftDrive = -gamepad1.left_stick_y;
-            double rightDrive = -gamepad1.right_stick_y;
-
-            frontLeft.setPower(leftDrive);
-            frontRight.setPower(rightDrive);
-            backLeft.setPower(leftDrive);
-            backRight.setPower(rightDrive);
-
-            // Intake control (A = forward, B = reverse)
-            if (gamepad2.a) {
-                intakeMotor.setPower(1.0);
-                intakeMotor.setPower(-1.0);
-            } else {
-                intakeMotor.setPower(0);
-            }
-
-            // Transfer Control (Y = push, X = pull)
-            if (gamepad2.y) {
-                transferMotor.setPower(1.0);
-                transferMotor.setPower(-1.0);
-            } else {
-                transferMotor.setPower(0);
-            }
-
-
-            if (gamepad2.right_bumper) {
-            } else {
-                shooter1.setPower(0);
-                shooter2.setPower(0);
-            }
-
-                }
-            } else {
-                blockerServo.setPosition(0);
-            }
-
-                // --- Telemetry ---
-                telemetry.addData("Status", "Run Time: " + runtime.toString());
-                telemetry.addData("Shooter1 Pos", shooter1.getCurrentPosition());
-                telemetry.addData("Shooter2 Pos", shooter2.getCurrentPosition());
-                telemetry.addData("Shooter Error", shooter1.getCurrentPosition() - shooter2.getCurrentPosition());
-                telemetry.addData("Shooter2 Adjusted Power", shooter2.getPower());
-                telemetry.addData("Feeder Servo", feederServo.getPosition());
-                telemetry.update();
-            }
-        }
+//package org.firstinspires.ftc.teamcode;
+//
+//import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+//import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+//import com.qualcomm.robotcore.hardware.DcMotor;
+//import com.qualcomm.robotcore.hardware.Servo;
+//import com.qualcomm.robotcore.util.ElapsedTime;
+//
+//@TeleOp(name = "Teleop2526")
+//public class Teleop2526 extends LinearOpMode {
+//
+//    private final ElapsedTime runtime = new ElapsedTime();
+//
+//    @Override
+//    public void runOpMode() {
+//
+//        // Initialize motors
+//        DcMotor frontRight = hardwareMap.get(DcMotor.class, "frontRight");
+//        DcMotor frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
+//        DcMotor backRight = hardwareMap.get(DcMotor.class, "backRight");
+//        DcMotor backLeft = hardwareMap.get(DcMotor.class, "backLeft");
+//        DcMotor intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
+//        DcMotor transferMotor = hardwareMap.get(DcMotor.class, "transferMotor");
+//        DcMotor shooter1 = hardwareMap.get(DcMotor.class, "Shooter1");
+//        DcMotor shooter2 = hardwareMap.get(DcMotor.class, "Shooter2");
+//
+//        // servo (part of intake)
+//        Servo feederServo = hardwareMap.get(Servo.class, "feederServo");
+//        Servo blockerServo = hardwareMap.get(Servo.class, "blockerServo");
+//
+//        frontLeft.setDirection(DcMotor.Direction.FORWARD);
+//        frontRight.setDirection(DcMotor.Direction.REVERSE);
+//        backLeft.setDirection(DcMotor.Direction.FORWARD);
+//        backRight.setDirection(DcMotor.Direction.REVERSE);
+//
+//        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//
+//        //Shooter Encoders
+//        shooter1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        shooter2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        shooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        shooter2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//
+//        //Reset encoders for intake
+//        intakeMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//
+//        telemetry.addData("Status", "Initialized");
+//
+//        telemetry.update();
+//
+//        // Wait for the game to start
+//        waitForStart();
+//        runtime.reset();
+//
+//        // PID sync variables
+//        double kP = 0.002; // proportional constant to sync shooter2 (change to be lower or higher)
+//        // Run until the end of the match
+//        while (opModeIsActive()) {
+//
+//            double leftDrive = -gamepad1.left_stick_y;
+//            double rightDrive = -gamepad1.right_stick_y;
+//
+//            frontLeft.setPower(leftDrive);
+//            frontRight.setPower(rightDrive);
+//            backLeft.setPower(leftDrive);
+//            backRight.setPower(rightDrive);
+//
+//            // Intake control (A = forward, B = reverse)
+//            if (gamepad2.a) {
+//                intakeMotor.setPower(1.0);
+//                intakeMotor.setPower(-1.0);
+//            } else {
+//                intakeMotor.setPower(0);
+//            }
+//
+//            // Transfer Control (Y = push, X = pull)
+//            if (gamepad2.y) {
+//                transferMotor.setPower(1.0);
+//                transferMotor.setPower(-1.0);
+//            } else {
+//                transferMotor.setPower(0);
+//            }
+//
+//
+//            if (gamepad2.right_bumper) {
+//            } else {
+//                shooter1.setPower(0);
+//                shooter2.setPower(0);
+//            }
+//
+//                }
+//            } else {
+//                blockerServo.setPosition(0);
+//            }
+//
+//                // --- Telemetry ---
+//              //  telemetry.addData("Status", "Run Time: " + runtime.toString());
+//                telemetry.addData("Shooter1 Pos", shooter1.getCurrentPosition());
+//                telemetry.addData("Shooter2 Pos", shooter2.getCurrentPosition());
+//                telemetry.addData("Shooter Error", shooter1.getCurrentPosition() - shooter2.getCurrentPosition());
+//                telemetry.addData("Shooter2 Adjusted Power", shooter2.getPower());
+//                telemetry.addData("Feeder Servo", feederServo.getPosition());
+//                telemetry.update();
+//            }
+//        }

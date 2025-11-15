@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.annotation.SuppressLint;
 import android.util.Size;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -32,7 +33,7 @@ public class AprilTagWebcam {
                 .build();
 
         VisionPortal.Builder builder = new VisionPortal.Builder();
-        builder.setCamera(hwMap.get(WebcamName.class, "Webcame 1"));
+        builder.setCamera(hwMap.get(WebcamName.class, "Webcam 1"));
         builder.setCameraResolution(new Size(640, 480));
         builder.addProcessor(aprilTagProcessor);
 
@@ -46,6 +47,7 @@ public class AprilTagWebcam {
         return detectedTags;
     }
 
+    @SuppressLint("DefaultLocale")
     public void displayDetectionTelemetry(AprilTagDetection detectedId) {
         if (detectedId == null) {return;}
         AprilTagDetection detection = null;
