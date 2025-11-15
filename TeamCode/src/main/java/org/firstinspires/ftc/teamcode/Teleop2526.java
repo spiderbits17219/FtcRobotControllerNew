@@ -113,7 +113,7 @@ public class Teleop2526 extends LinearOpMode {
 //                holdServo1.setPosition(1);
 //                holdServo2.setPosition(1);
 //                liftServo.setPosition(1);
-//
+
 //            }
 //
 //            if (gamepad2.right_stick_button){
