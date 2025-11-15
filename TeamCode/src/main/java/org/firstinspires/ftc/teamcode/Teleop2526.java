@@ -16,11 +16,11 @@ import com.qualcomm.robotcore.hardware.CRServo;
 public class Teleop2526 extends LinearOpMode {
 
     // --- FTC Dashboard tunable variables ---
-    public static double desiredVelocity = 0.001;
-    public static double kP1 = 0.002;
-    public static double kP2 = 0.002;
+    public static double desiredVelocity = 100;
+    public static double kP1 = 0.001;
+    public static double kP2 = 0.001;
     public static double shooterPower1 = 0.8;
-    public static double shooterPower2 = -0.8;
+    public static double shooterPower2 = 0.8;
 
     private final ElapsedTime runtime = new ElapsedTime();
 
@@ -39,9 +39,14 @@ public class Teleop2526 extends LinearOpMode {
 
         Servo feederServo = hardwareMap.get(Servo.class, "feederServo");
         Servo blockerServo = hardwareMap.get(Servo.class, "blockerServo");
-        CRServo liftServo = hardwareMap.get(CRServo.class, "cr_servo_name");
+        CRServo liftServo = hardwareMap.get(CRServo.class, "liftServo");
         Servo holdServo1 = hardwareMap.get(Servo.class, "holdServo1");
         Servo holdServo2 = hardwareMap.get(Servo.class, "holdServo2");
+
+        holdServo1.setPosition(0.5);
+        holdServo2.setPosition(0);
+        liftServo.setPower(0);
+        feederServo.setPosition(1);
 
 //        Servo feederServo = hardwareMap.get(Servo.class, "feederServo");
 //        Servo blockerServo = hardwareMap.get(Servo.class, "blockerServo");
@@ -92,10 +97,6 @@ public class Teleop2526 extends LinearOpMode {
             double leftDrive = -gamepad1.left_stick_y;
             double rightDrive = -gamepad1.right_stick_y;
 
-            holdServo1.setPosition(0.5);
-            holdServo2.setPosition(-0.5);
-            liftServo.setPower(1);
-
             frontLeft.setPower(leftDrive);
             frontRight.setPower(rightDrive);
             backLeft.setPower(leftDrive);
@@ -123,23 +124,24 @@ public class Teleop2526 extends LinearOpMode {
 
 
             if (gamepad2.left_bumper) {
+                liftServo.setPower(-1);
+                sleep(1700);
+                liftServo.setPower(0);
+                holdServo1.setPosition(0);
+                holdServo2.setPosition(0.5);
+                sleep(1000);
                 liftServo.setPower(1);
                 sleep(1000);
                 liftServo.setPower(0);
-                holdServo1.setPosition(0);
-                holdServo2.setPosition(0);
-                sleep(1000);
-                liftServo.setPower(1);
 
             }
 //
             if (gamepad2.right_stick_button){
                 blockerServo.setPosition(0);
             } else {
-                blockerServo.setPosition(0.5);
+                blockerServo.setPosition(0.3);
             }
 //
-
             // --- Lift servo ---
 //            if (gamepad2.right_bumper) {
 //                shooter1.setPower(1);
@@ -169,33 +171,6 @@ public class Teleop2526 extends LinearOpMode {
                 shooter2.setPower(0);
             }
 
-            //  --- Shooter control with synchronization ---
-//            if (gamepad2.right_bumper) {
-//                int pos1 = shooter1.getCurrentPosition();
-//                int pos2 = shooter2.getCurrentPosition();
-//                double timeNow = runtime.time();
-//
-//                double velocity1 = (pos1 - lastPos1) / (timeNow - lastTime);
-//                double velocity2 = (pos2 - lastPos2) / (timeNow - lastTime);
-//
-//                double error1 = desiredVelocity - velocity1;
-//                double error2 = desiredVelocity - velocity2;
-//
-//                double syncAdjust1 = kP1 * error1;
-//                double syncAdjust2 = kP2 * error2;
-//
-//                shooter1.setPower(shooterPower1 + syncAdjust1);
-//                shooter2.setPower(shooterPower2 + syncAdjust2);
-//
-//                lastPos1 = pos1;
-//                lastPos2 = pos2;
-//                lastTime = timeNow;
-
-//            } else {
-//                shooter1.setPower(0);
-//                shooter2.setPower(0);
-//            }
-
               //--- Shooter control with synchronization ---
             if (gamepad2.right_bumper) {
                 int pos1 = shooter1.getCurrentPosition();
@@ -217,6 +192,11 @@ public class Teleop2526 extends LinearOpMode {
                 lastPos1 = pos1;
                 lastPos2 = pos2;
                 lastTime = timeNow;
+
+
+                if (shooter1.getPower() >= desiredVelocity && shooter2.getPower() >= desiredVelocity ) {
+                    feederServo.setPosition(0.5);
+                }
             } else {
                 shooter1.setPower(0);
                 shooter2.setPower(0);
@@ -288,14 +268,4 @@ public class Teleop2526 extends LinearOpMode {
 //            }
 //
 
-//            // --- Telemetry + Dashboard Data ---
-//            telemetry.addData("Status", "Run Time: " + runtime.toString());
-//            telemetry.addData("Shooter1 Pos", shooter1.getCurrentPosition());
-//            telemetry.addData("Shooter2 Pos", shooter2.getCurrentPosition());
-//            telemetry.addData("Shooter Error", shooter1.getCurrentPosition() - shooter2.getCurrentPosition());
-//            telemetry.addData("Shooter1 Power", shooter1.getPower());
-//            telemetry.addData("Shooter2 Power", shooter2.getPower());
-//            telemetry.addData("Desired Velocity", desiredVelocity);
-////            telemetry.addData("Lift Servo", liftServo.getPosition());
-//            telemetry.update();
-//        }
+            // --- Telemetry + Dashboard Data ---
