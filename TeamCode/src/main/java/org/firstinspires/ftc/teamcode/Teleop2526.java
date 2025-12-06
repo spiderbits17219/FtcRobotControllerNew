@@ -6,31 +6,28 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.hardware.CRServo;
+
 
 
 @Config
 @TeleOp(name = "Teleop2526", group = "TeleOp")
 public class Teleop2526 extends LinearOpMode {
     // --- FTC Dashboard tunable variables ---
-    public static double desiredVelocity = 100;
-    public static double kP1 = 0.001;
-    public static double kP2 = 0.001;
+    public static double desiredVelocity = 2350;
+    public static double kP1 = 0.028;
+    public static double kP2 = 0.028;
 
-    public static double  Ki1 = 0.001;
+    public static double  Ki1 = 0.004;
 
-    public static double Ki2 = 0.002;
+    public static double Ki2 = 0.004;
 
-    public static double Kd1 = 0.002;
+    public static double Kd1 = 0.0053;
 
-    public static double Kd2 = 0.001;
+    public static double Kd2 = 0.0053;
 
-    public static double velocity1 = 0;
 
-    public static double velocity2 = 0;
     public static double shooterPower1 = 0;
     public static double shooterPower2 = 0;
     private final ElapsedTime runtime = new ElapsedTime();
@@ -64,14 +61,9 @@ public class Teleop2526 extends LinearOpMode {
         double derivative2 = 0;
         double output_power1 = 0;
         double output_power2 = 0;
+        double error1 = 0;
+        double error2 = 0;
 
-
-//        Servo feederServo = hardwareMap.get(Servo.class, "feederServo");
-//        Servo shooterServo = hardwareMap.get(Servo.class, "shooterServo");
-//        Servo liftServo = (Servo) hardwareMap.get(CRServo.class, "liftServo");
-//        Servo holdServo1 = hardwareMap.get(Servo.class, "holdServo1");
-//        Servo holdServo2 = hardwareMap.get(Servo.class, "holdServo2");
-        // Motor directions
 
 
         boolean shooterServoOpen = false;
@@ -80,7 +72,7 @@ public class Teleop2526 extends LinearOpMode {
         backLeft.setDirection(DcMotor.Direction.FORWARD);
         backRight.setDirection(DcMotor.Direction.REVERSE);
         shooter1.setDirection(DcMotor.Direction.FORWARD);
-        shooter2.setDirection(DcMotor.Direction.FORWARD);
+        shooter2.setDirection(DcMotor.Direction.REVERSE);
         // Brake behavior
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -139,21 +131,7 @@ public class Teleop2526 extends LinearOpMode {
                 sleep(1000);
                 liftServo.setPower(0);
             }
-            //   if (gamepad2.right_bumper) {
-            //               shooter1.setPower(0.3);
-            //              if (gamepad2.left_bumper)
-            //                   shooter2.setPower(0.3);
-            //     if (!shooterServoOpen && velocity1 >= desiredVelocity && velocity2 >= desiredVelocity) {
-            //         shooterServoOpen = true;
-            //         shooterServo.setPosition(1);
 
-            //     }
-            //    else if (shooterServoOpen) {
-            //         shooterServoOpen = false;
-            //         shooterServo.setPosition(0.6);
-
-            //     }
-            // }
 
             if (gamepad2.right_trigger > 0.5) {
                 if (!shooterServoOpen) {
@@ -202,8 +180,8 @@ public class Teleop2526 extends LinearOpMode {
                 double timeNow = runtime.time();
                 velocity1 = (pos1 - lastPos1) / (timeNow - lastTime);
                 velocity2 = (pos2 - lastPos2) / (timeNow - lastTime);
-                double error1 = desiredVelocity - velocity1;
-                double error2 = desiredVelocity - velocity2;
+                error1 = desiredVelocity - velocity1;
+                error2 = desiredVelocity - velocity2;
                 double syncAdjust1 = kP1 * error1;
                 double syncAdjust2 = kP2 * error2;
                 integral_sum1 = integral_sum1 + (error1 * (timeNow - lastTime));
@@ -251,8 +229,6 @@ public class Teleop2526 extends LinearOpMode {
                 if (velocity1 >= desiredVelocity && velocity2 >= desiredVelocity ) {
                     shooterServo.setPosition(1);
                 }
-                telemetry.addData(" Velocity 1", velocity1);
-                telemetry.addData("Velocity 2", velocity2);
             } else {
                 shooter1.setPower(0);
                 shooter2.setPower(0);
@@ -265,6 +241,11 @@ public class Teleop2526 extends LinearOpMode {
             telemetry.addData("Shooter1 Power", shooter1.getPower());
             telemetry.addData("Shooter2 Power", shooter2.getPower());
             telemetry.addData("Desired Velocity", desiredVelocity);
+            telemetry.addData(" Velocity 1", velocity1);
+            telemetry.addData("Velocity 2", velocity2);
+            telemetry.addData("Velocity 2", velocity2);
+            telemetry.addData("error 1", error1);
+            telemetry.addData("error 2", error2);
 //            telemetry.addData("Lift Servo", liftServo.getPosition());
             telemetry.update();
         }
