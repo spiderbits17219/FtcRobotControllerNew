@@ -1,105 +1,153 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="redCloseAuto", group="Autonomous")
 public class redCloseAuto extends LinearOpMode {
 
-    private DcMotor leftFront = null;
-    private DcMotor leftBack = null;
-    private DcMotor rightFront = null;
-    private DcMotor rightBack = null;
-    private DcMotor Shooter1 = null;
-    private DcMotor Shooter2 = null;
+    private DcMotor frontLeft, backLeft, frontRight, backRight;
+    private DcMotor shooter1, shooter2, intakeMotor, transferMotor;
 
-    // Motor / wheel constants
-    static final double COUNTS_PER_MOTOR_REV = 537.7;   // GoBILDA Yellow Jacket (19.2:1)
-    static final double WHEEL_DIAMETER_INCHES = 4.0;    // Wheel diameter
-    static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER_INCHES * Math.PI;
-    static final double COUNTS_PER_INCH = COUNTS_PER_MOTOR_REV / WHEEL_CIRCUMFERENCE;
+    public double desiredVelocity = 0.001;
+    public double kP1 = 0.002, kP2 = 0.002;
+    public double shooterPower1 = 0.8, shooterPower2 = -0.8;
+
+    private final ElapsedTime runtime = new ElapsedTime();
+
+    static final double COUNTS_PER_MOTOR_REV = 537.7;
+    static final double WHEEL_DIAMETER_INCHES = 4.0;
+    static final double COUNTS_PER_INCH =
+            COUNTS_PER_MOTOR_REV / (WHEEL_DIAMETER_INCHES * Math.PI);
 
     @Override
     public void runOpMode() throws InterruptedException {
-        // Map hardware
-        leftFront = hardwareMap.get(DcMotor.class, "frontLeft");
-        leftBack = hardwareMap.get(DcMotor.class, "backLeft");
-        rightFront = hardwareMap.get(DcMotor.class, "frontRight");
-        rightBack = hardwareMap.get(DcMotor.class, "backRight");
-        Shooter1 = hardwareMap.get(DcMotor.class, "Shooter1");
-        Shooter2 = hardwareMap.get(DcMotor.class, "Shooter2");
 
-        // Reverse one side
-        leftFront.setDirection(DcMotor.Direction.FORWARD);
-        leftBack.setDirection(DcMotor.Direction.FORWARD);
-        rightFront.setDirection(DcMotor.Direction.REVERSE);
-        rightBack.setDirection(DcMotor.Direction.REVERSE);
-        Shooter1.setDirection(DcMotor.Direction.FORWARD);
-        Shooter2.setDirection(DcMotor.Direction.FORWARD);
+        // ---------------------------
+        // Hardware Mapping
+        // ---------------------------
+        frontLeft     = hardwareMap.get(DcMotor.class, "frontLeft");
+        backLeft      = hardwareMap.get(DcMotor.class, "backLeft");
+        frontRight    = hardwareMap.get(DcMotor.class, "frontRight");
+        backRight     = hardwareMap.get(DcMotor.class, "backRight");
+        shooter1      = hardwareMap.get(DcMotor.class, "Shooter1");
+        shooter2      = hardwareMap.get(DcMotor.class, "Shooter2");
+        intakeMotor   = hardwareMap.get(DcMotor.class, "intakeMotor");
+        transferMotor = hardwareMap.get(DcMotor.class, "transferMotor");
 
-        // Reset encoders
-        resetEncoders();
+        Servo feederServo = hardwareMap.get(Servo.class, "feederServo");
+        Servo blockerServo = hardwareMap.get(Servo.class, "blockerServo");
+        CRServo liftServo = hardwareMap.get(CRServo.class, "liftServo");
+        Servo holdServo1 = hardwareMap.get(Servo.class, "holdServo1");
+        Servo holdServo2 = hardwareMap.get(Servo.class, "holdServo2");
+
+        // ---------------------------
+        // Motor Config
+        // ---------------------------
+        frontLeft.setDirection(DcMotor.Direction.FORWARD);
+        backLeft.setDirection(DcMotor.Direction.FORWARD);
+        frontRight.setDirection(DcMotor.Direction.REVERSE);
+        backRight.setDirection(DcMotor.Direction.REVERSE);
+
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        shooter1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        shooter2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        shooter1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooter2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        intakeMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        resetEncoders(); // for mecanum drive
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        waitForStart();
+        // Dashboard telemetry
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
 
-        Shooter1.setPower(1);
-        Shooter2.setPower(1);
+        // ---------------------------
+        // WAIT FOR START
+        // ---------------------------
+        waitForStart();
+        runtime.reset();
+
+        shooter1.setPower(0.8);
+        shooter2.setPower(0.8);
+        sleep(10000);
+
+        shooter1.setPower(0.8);
+        shooter2.setPower(0.8);
+        blockerServo.setPosition(0.5);
+        intakeMotor.setPower(-0.8);
+
+        transferMotor.setPower(-0.8);
+
+        // Feed rings
+        feederServo.setPosition(1);
+        sleep(1000);
+
+        // ---------------------------
+        // MOVEMENT
+        //---------------------------
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
-
-        wait(1000);
+        sleep(2000);
     }
 
-    // --- Forward/backward drive ---
+    // ------------------------------------------------------------------------
+    // ENCODER DRIVE FUNCTIONS
+    // ------------------------------------------------------------------------
     public void encoderDrive(double speed, double inches) {
         int targetTicks = (int) (inches * COUNTS_PER_INCH);
-
         setTargetPositions(targetTicks, targetTicks);
         runToPositionWithPower(speed);
     }
 
-    // --- Turning drive (right = positive inches, left = negative inches) ---
     public void turnDrive(double speed, double inches) {
         int targetTicks = (int) (inches * COUNTS_PER_INCH);
-
-        // Opposite directions for turning
         setTargetPositions(targetTicks, -targetTicks);
         runToPositionWithPower(speed);
     }
 
-    // --- Utility: Set target positions relative to current ---
     private void setTargetPositions(int leftTicks, int rightTicks) {
-        leftFront.setTargetPosition(leftFront.getCurrentPosition() + leftTicks);
-        leftBack.setTargetPosition(leftBack.getCurrentPosition() + leftTicks);
-        rightFront.setTargetPosition(rightFront.getCurrentPosition() + rightTicks);
-        rightBack.setTargetPosition(rightBack.getCurrentPosition() + rightTicks);
+        frontLeft.setTargetPosition(frontLeft.getCurrentPosition() + leftTicks);
+        backLeft.setTargetPosition(backLeft.getCurrentPosition() + leftTicks);
+        frontRight.setTargetPosition(frontRight.getCurrentPosition() + rightTicks);
+        backRight.setTargetPosition(backRight.getCurrentPosition() + rightTicks);
 
-        leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
-    // --- Utility: Run motors until done ---
     private void runToPositionWithPower(double speed) {
-        leftFront.setPower(Math.abs(speed));
-        leftBack.setPower(Math.abs(speed));
-        rightFront.setPower(Math.abs(speed));
-        rightBack.setPower(Math.abs(speed));
+        frontLeft.setPower(speed);
+        backLeft.setPower(speed);
+        frontRight.setPower(speed);
+        backRight.setPower(speed);
 
         while (opModeIsActive() &&
-                (leftFront.isBusy() && rightFront.isBusy() &&
-                        leftBack.isBusy() && rightBack.isBusy())) {
-            telemetry.addData("LF", leftFront.getCurrentPosition());
-            telemetry.addData("RF", rightFront.getCurrentPosition());
-            telemetry.addData("LB", leftBack.getCurrentPosition());
-            telemetry.addData("RB", rightBack.getCurrentPosition());
+                (frontLeft.isBusy() && frontRight.isBusy() &&
+                        backLeft.isBusy() && backRight.isBusy())) {
+
+            telemetry.addData("LF", frontLeft.getCurrentPosition());
+            telemetry.addData("RF", frontRight.getCurrentPosition());
+            telemetry.addData("LB", backLeft.getCurrentPosition());
+            telemetry.addData("RB", backRight.getCurrentPosition());
             telemetry.update();
         }
 
@@ -107,28 +155,25 @@ public class redCloseAuto extends LinearOpMode {
         resetToEncoderMode();
     }
 
-    // --- Reset encoders ---
     private void resetEncoders() {
-        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         resetToEncoderMode();
     }
 
     private void resetToEncoderMode() {
-        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     private void stopAllMotors() {
-        leftFront.setPower(0);
-        leftBack.setPower(0);
-        rightFront.setPower(0);
-        rightBack.setPower(0);
+        frontLeft.setPower(0);
+        backLeft.setPower(0);
+        frontRight.setPower(0);
+        backRight.setPower(0);
     }
-
 }
