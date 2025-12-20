@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 @TeleOp(name = "Teleop2526", group = "TeleOp")
 public class Teleop2526 extends LinearOpMode {
 
-    // --- FTC Dashboard tunable variables ---
+    // FTC Dashboard tunable variables
     public static double desiredVelocity = 0.001;
     public static double kP1 = 0.002;
     public static double kP2 = 0.002;
