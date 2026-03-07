@@ -49,8 +49,8 @@ public class blueCloseAuto3 extends LinearOpMode {
         // Motor Config
         // ---------------------------
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
-        backLeft.setDirection(DcMotor.Direction.FORWARD);
         frontRight.setDirection(DcMotor.Direction.REVERSE);
+        backLeft.setDirection(DcMotor.Direction.FORWARD);
         backRight.setDirection(DcMotor.Direction.REVERSE);
         shooter1.setDirection(DcMotor.Direction.FORWARD);
         shooter2.setDirection(DcMotor.Direction.REVERSE);
@@ -80,26 +80,27 @@ public class blueCloseAuto3 extends LinearOpMode {
         // ---------------------------
         waitForStart();
         runtime.reset();
-
+        intakeServo.setPosition(0.7);
         shooterServo.setPosition(0.6);
-        intakeServo.setPosition(0.6);
         shooter1.setPower(0.36);
         shooter2.setPower(0.36);
-        encoderDrive(0.5, -5); // move backwards
+        encoderDrive(0.5, -5); // move forward
         turnDrive(0.5, -10);      // turn right
-        encoderDrive(0.5, -30);   //move backwards
+        encoderDrive(0.5, -32);   //half a tile
+        encoderDrive(0.5, 4);
         intakeServo.setPosition(1);
-
-        shooter1.setPower(0.35);
-        shooter2.setPower(0.35);
-        intakeMotor.setPower(-0.8);
-        transferMotor.setPower(-0.8);
+        double startTime = getRuntime();
+        double duration = 4;
         shooterServo.setPosition(1);
+        sleep(500);
+        shooter1.setPower(0.4);
+        shooter2.setPower(0.4);
+        intakeMotor.setPower(-0.8);
+        transferMotor.setPower(-0.9);
         sleep(4000);
 
-        turnDrive(0.5, -10); //turn right
-        encoderDrive(0.5, -20); //move backwards
-        turnDrive(0.5, -20); // turn right
+        turnDrive(0.5, -10); //turn left
+        encoderDrive(0.5, 25); //move backwards
 
         sleep(1000);
 

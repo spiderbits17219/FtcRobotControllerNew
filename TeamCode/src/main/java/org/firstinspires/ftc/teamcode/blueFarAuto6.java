@@ -90,17 +90,17 @@ public class blueFarAuto6 extends LinearOpMode {
         intakeServo.setPosition(1);
         double startTime = getRuntime();
         double duration = 4;
-
-        shooter1.setPower(0.4);
-        shooter2.setPower(0.4);
+        shooterServo.setPosition(1);
+        sleep(500);
+        shooter1.setPower(0.35);
+        shooter2.setPower(0.35);
         intakeMotor.setPower(-0.8);
         transferMotor.setPower(-0.9);
-        shooterServo.setPosition(1);
         sleep(4000);
 
         turnDrive(0.5, -10); //turn left
         encoderDrive(0.5, -15); //move backwards
-        turnDrive(0.5, -20); // turn left
+        turnDrive(0.5, -18); // turn left
         shooterServo.setPosition(0.6);
         intakeServo.setPosition(1);
         intakeMotor.setPower(-0.8);
@@ -108,22 +108,25 @@ public class blueFarAuto6 extends LinearOpMode {
 
 // drive backward 20 inches while intaking (intake is on back)
         encoderDrive(0.3, -25);
-        encoderDrive(0.5, 35);
-        turnDrive(0.5, 30); // turn left
+        encoderDrive(0.5, 40);
+        turnDrive(0.5, 28); // turn left
         encoderDrive(0.5, 5);
         shooterServo.setPosition(0.6);
 
+        shooterServo.setPosition(1);
+        sleep(500);
         shooter1.setPower(0.4);
         shooter2.setPower(0.4);
         intakeMotor.setPower(-0.8);
         transferMotor.setPower(-1);
-        shooterServo.setPosition(1);
+
 
         sleep(4000);
 
+        shooterServo.setPosition(0.6);
 
         turnDrive(0.5, -10);
-        encoderDrive(0.5, -25);
+        encoderDrive(0.5, 30);
 
 
         sleep(1000);

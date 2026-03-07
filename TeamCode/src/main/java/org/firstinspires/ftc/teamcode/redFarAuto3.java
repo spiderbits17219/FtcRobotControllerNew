@@ -90,17 +90,16 @@ public class redFarAuto3 extends LinearOpMode {
         intakeServo.setPosition(1);
         double startTime = getRuntime();
         double duration = 4;
-
-        shooter1.setPower(0.4);
-        shooter2.setPower(0.4);
+        shooterServo.setPosition(1);
+        sleep(500);
+        shooter1.setPower(0.35);
+        shooter2.setPower(0.35);
         intakeMotor.setPower(-0.8);
         transferMotor.setPower(-0.9);
-        shooterServo.setPosition(1);
         sleep(4000);
 
         turnDrive(0.5, 10); //turn left
-        encoderDrive(0.5, -15); //move backwards
-        turnDrive(0.5, 20); // turn left
+        encoderDrive(0.5, 25); //move backwards
 
         sleep(1000);
 

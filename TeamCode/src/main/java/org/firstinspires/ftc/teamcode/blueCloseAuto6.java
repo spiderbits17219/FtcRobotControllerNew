@@ -86,41 +86,43 @@ public class blueCloseAuto6 extends LinearOpMode {
         shooter1.setPower(0.36);
         shooter2.setPower(0.36);
         encoderDrive(0.5, -5); // move backwards
-        turnDrive(0.5, -10);      // turn right
+        turnDrive(0.5, -10);      // turn left
         encoderDrive(0.5, -30);   //move backwards
         intakeServo.setPosition(1);
 
-        shooter1.setPower(0.35);
-        shooter2.setPower(0.35);
+        shooterServo.setPosition(1);
+        sleep(1200);
+        shooter1.setPower(0.4);
+        shooter2.setPower(0.4);
         intakeMotor.setPower(-0.8);
         transferMotor.setPower(-0.8);
-        shooterServo.setPosition(1);
         sleep(4000);
 
-        turnDrive(0.5, -10); //turn right
-        encoderDrive(0.5, -20); //move backwards
-        turnDrive(0.5, -20); // turn right
+        turnDrive(0.5, -10); //turn left
+        encoderDrive(0.5, -15); //move backwards
+        turnDrive(0.5, -23); // turn left
         shooterServo.setPosition(0.6);
         intakeMotor.setPower(-0.8);
         transferMotor.setPower(-0.8);
 
-        encoderDrive(0.3, -25);
-        encoderDrive(0.5,38 );
-        turnDrive(0.5,  30); // turn left
+        encoderDrive(0.3, -30);
+        encoderDrive(0.5,37 );
+        turnDrive(0.5,  32); // turn right
         encoderDrive(0.5,5 );
         shooterServo.setPosition(0.6);
+
+        shooterServo.setPosition(1);
+        sleep(1200);
 
         shooter1.setPower(0.4);
         shooter2.setPower(0.4);
         intakeMotor.setPower(-0.8);
         transferMotor.setPower(-1);
-        shooterServo.setPosition(1);
-
         sleep(4000);
 
 
         turnDrive(0.5,  -10);
-        encoderDrive(0.5, -25);
+        encoderDrive(0.5, 27);
 
 
 

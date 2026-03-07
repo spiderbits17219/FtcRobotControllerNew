@@ -49,8 +49,8 @@ public class redCloseAuto3 extends LinearOpMode {
         // Motor Config
         // ---------------------------
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
-        backLeft.setDirection(DcMotor.Direction.FORWARD);
         frontRight.setDirection(DcMotor.Direction.REVERSE);
+        backLeft.setDirection(DcMotor.Direction.FORWARD);
         backRight.setDirection(DcMotor.Direction.REVERSE);
         shooter1.setDirection(DcMotor.Direction.FORWARD);
         shooter2.setDirection(DcMotor.Direction.REVERSE);
@@ -90,16 +90,15 @@ public class redCloseAuto3 extends LinearOpMode {
         encoderDrive(0.5, -30);   //move backwards
         intakeServo.setPosition(1);
 
-        shooter1.setPower(0.35);
-        shooter2.setPower(0.35);
+        shooter1.setPower(0.4);
+        shooter2.setPower(0.4);
         intakeMotor.setPower(-0.8);
         transferMotor.setPower(-0.8);
         shooterServo.setPosition(1);
         sleep(4000);
 
         turnDrive(0.5, 10); //turn left
-        encoderDrive(0.5, -20); //move backwards
-        turnDrive(0.5, 20); // turn left
+        encoderDrive(0.5, 25); //move forwards
 
         sleep(1000);
 

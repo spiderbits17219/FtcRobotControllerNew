@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -9,15 +7,15 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="redFarAuto", group="Autonomous")
-public class redFarAuto extends LinearOpMode {
+@Autonomous(name="farOffLine", group="Autonomous")
+public class farOffLine extends LinearOpMode {
 
     private DcMotor frontLeft, backLeft, frontRight, backRight;
     private DcMotor shooter1, shooter2, intakeMotor, transferMotor;
 
-    public double desiredVelocity = 0.001;
-    public double kP1 = 0.002, kP2 = 0.002;
-    public double shooterPower1 = 0.8, shooterPower2 = -0.8;
+//    public double desiredVelocity = 0.001;
+//    public double kP1 = 0.002, kP2 = 0.002;
+//    public double shooterPower1 = 0.8, shooterPower2 = -0.8;
 
     private final ElapsedTime runtime = new ElapsedTime();
 
@@ -32,17 +30,17 @@ public class redFarAuto extends LinearOpMode {
         // ---------------------------
         // Hardware Mapping
         // ---------------------------
-        frontLeft     = hardwareMap.get(DcMotor.class, "frontLeft");
-        backLeft      = hardwareMap.get(DcMotor.class, "backLeft");
-        frontRight    = hardwareMap.get(DcMotor.class, "frontRight");
-        backRight     = hardwareMap.get(DcMotor.class, "backRight");
-        shooter1      = hardwareMap.get(DcMotor.class, "Shooter1");
-        shooter2      = hardwareMap.get(DcMotor.class, "Shooter2");
-        intakeMotor   = hardwareMap.get(DcMotor.class, "intakeMotor");
+        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
+        backLeft = hardwareMap.get(DcMotor.class, "backLeft");
+        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
+        backRight = hardwareMap.get(DcMotor.class, "backRight");
+        shooter1 = hardwareMap.get(DcMotor.class, "Shooter1");
+        shooter2 = hardwareMap.get(DcMotor.class, "Shooter2");
+        intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
         transferMotor = hardwareMap.get(DcMotor.class, "transferMotor");
 
-        Servo feederServo = hardwareMap.get(Servo.class, "feederServo");
-        Servo blockerServo = hardwareMap.get(Servo.class, "blockerServo");
+        Servo intakeServo = hardwareMap.get(Servo.class, "intakeServo");
+        Servo shooterServo = hardwareMap.get(Servo.class, "shooterServo");
         CRServo liftServo = hardwareMap.get(CRServo.class, "liftServo");
         Servo holdServo1 = hardwareMap.get(Servo.class, "holdServo1");
         Servo holdServo2 = hardwareMap.get(Servo.class, "holdServo2");
@@ -51,9 +49,11 @@ public class redFarAuto extends LinearOpMode {
         // Motor Config
         // ---------------------------
         frontLeft.setDirection(DcMotor.Direction.FORWARD);
-        backLeft.setDirection(DcMotor.Direction.FORWARD);
         frontRight.setDirection(DcMotor.Direction.REVERSE);
+        backLeft.setDirection(DcMotor.Direction.FORWARD);
         backRight.setDirection(DcMotor.Direction.REVERSE);
+        shooter1.setDirection(DcMotor.Direction.FORWARD);
+        shooter2.setDirection(DcMotor.Direction.REVERSE);
 
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -68,40 +68,22 @@ public class redFarAuto extends LinearOpMode {
         intakeMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        resetEncoders(); // for mecanum drive
+        resetEncoders();
+        sleep(10);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        // Dashboard telemetry
-        FtcDashboard dashboard = FtcDashboard.getInstance();
-        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
 
         // ---------------------------
         // WAIT FOR START
         // ---------------------------
         waitForStart();
         runtime.reset();
-
-        blockerServo.setPosition(0);
-        encoderDrive(0.5, 50);
-        shooter1.setPower(0.8);
-        shooter2.setPower(0.8);
-        encoderDrive(0.5, 50);
-        turnDrive(0.5, 12);      // turn left
-        encoderDrive(0.5, 6);   //half a tile
+        encoderDrive(0.5, -10);
 
 
-        sleep(10000);
-        shooter1.setPower(0.8);
-        shooter2.setPower(0.8);
-        blockerServo.setPosition(0.5);
-        intakeMotor.setPower(-0.8);
 
-        transferMotor.setPower(-0.8);
-
-        // Feed rings
-        feederServo.setPosition(1);
         sleep(1000);
 
         // ---------------------------

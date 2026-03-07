@@ -12,38 +12,42 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 
 @Config
-@TeleOp(name = "Teleop2526", group = "TeleOp")
-public class Teleop2526 extends LinearOpMode {
+@TeleOp(name = "TeleopLeft2526", group = "TeleOp")
+public class TeleopLeft2526 extends LinearOpMode {
     // --- FTC Dashboard tunable variables ---
-    public static double desiredVelocity = 800;
-    public static double kP1 = 4;
-    public static double kP2 = 8;
+    public static double desiredVelocity = 1100;
+    public static double kP1 = 1;
+    public static double kP2 = 5;
 
-    public static double  kI1 = 4;
+    public static double  kI1 = 0;
 
-    public static double kI2 = 4;
+    public static double kI2 = 0;
 
-    public static double kD1 = 0.05;
+    public static double kD1 = 0;
 
-    public static double kD2 = 0.05;
+    public static double kD2 = 0;
 
     public static double kF1 = 0;
 
     public static double kF2 = 0;
 
-
-
-
+RobotDistance bench = new RobotDistance();
     public static double shooterVelocity1 = 0;
     public static double shooterVelocity2 = 0;
     private final ElapsedTime runtime = new ElapsedTime();
+    private final AprilTagWebcam aprilTagWebcam = new AprilTagWebcam();
+    // Change this to the ID of the tag you care about
+    private static final int TARGET_TAG_ID = 20;
 
     // Creates a PIDFController with gains kP, kI, kD, and kF
     PIDFController pidf1 = new PIDFController(kP1, kI1, kD1, kF1);
     PIDFController pidf2 = new PIDFController(kP2, kI2, kD2, kF2);
+
+
 
     @Override
     public void runOpMode() {
@@ -54,8 +58,8 @@ public class Teleop2526 extends LinearOpMode {
         DcMotor backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         DcMotor intakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
         DcMotor transferMotor = hardwareMap.get(DcMotor.class, "transferMotor");
-        MotorEx shooter1 = new MotorEx(hardwareMap, "shooter1", Motor.GoBILDA.RPM_312);
-        MotorEx shooter2 = new MotorEx(hardwareMap, "shooter2", Motor.GoBILDA.RPM_312);
+        MotorEx shooter1 = new MotorEx(hardwareMap, "Shooter1", Motor.GoBILDA.RPM_312);
+        MotorEx shooter2 = new MotorEx(hardwareMap, "Shooter2", Motor.GoBILDA.RPM_312);
         Servo shooterServo = hardwareMap.get(Servo.class, "shooterServo");
         Servo intakeServo = hardwareMap.get(Servo.class, "intakeServo");
         CRServo liftServo = hardwareMap.get(CRServo.class, "liftServo");
@@ -67,6 +71,8 @@ public class Teleop2526 extends LinearOpMode {
         shooterServo.setPosition(0.6);
         shooter1.setRunMode(Motor.RunMode.VelocityControl);
         shooter2.setRunMode(Motor.RunMode.VelocityControl);
+
+        bench.init(hardwareMap);
 //
 //        double[] coeffs1 = shooter1.getVeloCoefficients();
 //        kP1 = coeffs1[0];
@@ -95,6 +101,21 @@ public class Teleop2526 extends LinearOpMode {
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+
+        // ---------- APRILTAG INIT ----------
+        telemetry.addLine("Initializing AprilTag webcam...");
+        telemetry.update();
+
+        aprilTagWebcam.init(hardwareMap, telemetry);
+
+        telemetry.addLine("AprilTag init complete.");
+        telemetry.update();
+        // -----------------------------------
+
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
+
+
         // --- FTC Dashboard Setup ---
         // --- FTC Dashboard Setup ---
         FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -105,9 +126,22 @@ public class Teleop2526 extends LinearOpMode {
         double lastPos2 = shooter2.motor.getCurrentPosition();
         double lastTime = runtime.time();
         while (opModeIsActive()) {
+
+            // ---------- APRILTAG UPDATE + TELEMETRY ----------
+            aprilTagWebcam.update();
+            AprilTagDetection targetTag = aprilTagWebcam.getTagBySpecificId(TARGET_TAG_ID);
+
+            telemetry.addLine("----- AprilTag Status -----");
+            if (targetTag != null) {
+                telemetry.addData("Tag ID", targetTag.id);
+                telemetry.addData("Range to Tag (cm)", targetTag.ftcPose.range);
+            } else {
+                telemetry.addLine("Tag NOT detected.");
+            }
+
             // --- Drive control ---
-            double leftDrive = gamepad1.left_stick_y;
-            double rightDrive = gamepad1.right_stick_y;
+            double leftDrive = gamepad1.left_stick_y * 0.9;
+            double rightDrive = gamepad1.right_stick_y * 0.9;
             if (gamepad1.y) {
                 sleep(1000);
             }
@@ -191,11 +225,13 @@ public class Teleop2526 extends LinearOpMode {
             telemetry.addData("Left Flywheel Velocity", shooter1.getVelocity());
             telemetry.addData("Right Flywheel Velocity", shooter2.getVelocity());
             telemetry.addData("desired velocity", desiredVelocity);
-
+            telemetry.addData("Distance", bench.getDistance());
 
 
             telemetry.update();
         }
+        // ---------- APRILTAG CLEANUP ----------
+        aprilTagWebcam.stop();
     }
 }
 
